@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Firebase Authentication</title>
+	<script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+	<script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+	<div id="app">
+		<h1>Vue School -FireBase Authentication </h1>
+		<div v-if="authUser">
+			<h2>Signed in as {{authUser.email}}</h2>
+			<button @click="signOut"> Sign out</button>
+		</div>
+		<div v-else>
+			<button changeState(register)>Register</button>
+			<button changeState(sign)>Sign In</button>
+			<div v-if="state==='register'">
+				<button @click="changeState('register')">Register</button> 
+			<div v-else>
+				<button @click="changeState('signIn')">Sign in</button>
+			</div>
+			<form @submit.prevent="register">
+				<h2> Register </h2>		
+				<input type="email"  v-model="email" name="email" placeholder="Type your email">
+				<input type="password" v-model="password" name="password"  placeholder="Pick your password">
+			</form>
+		</div>
+
+	
+		</div>
+	</div>
+	
+		
+
+	<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBavprEEVKaDe4xNgjqqEIcSb0wn2WH9lY",
+    authDomain: "vueschool-firebase-auth-7534c.firebaseapp.com",
+    databaseURL: "https://vueschool-firebase-auth-7534c.firebaseio.com",
+    projectId: "vueschool-firebase-auth-7534c",
+    storageBucket: "vueschool-firebase-auth-7534c.appspot.com",
+    messagingSenderId: "350073639689"
+  };
+  firebase.initializeApp(config);
+
+  	new Vue({
+		el:'#app',
+
+		 data: {
+		 	email:'',
+		 	password:'',
+		 	state:'register'
+
+		 },
+
+		 methods:{
+		 	register ()  {
+		 		firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+		 	},
+		
+
+		 	created (){
+		 		firebase.auth().onAuthStateChanged(user => {this.authUser = user })
+		 	},
+ 
+		 	signOut () {
+		 		firebase.auth().signOut()
+		 	},
+		 	signIn(){
+		 		firebase.auth().signInWithEmmailAndPassword(this.email, this.password)
+		 	},
+		 	changestate: function(state){
+		 		this.state=state
+		 	}
+		 },
+	})
+
+
+</script>
+</body>
+</html>

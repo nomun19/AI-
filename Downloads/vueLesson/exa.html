@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Firebase Authentication</title>
+	<script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+	<script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+
+	<div id="app">
+		<div v-if="authUser">
+			<h2>Signed in as {{authUser.email}}</h2>
+			<button @click="signOut"> Sign out</button>
+		</div>
+		<div v-else>
+			<h1>Vue Login Form</h1>
+			<div v-if="state=='default'">
+				<button @click="changeState('register')">Register</button>
+				<button @click="changeState('sign')">Sign In</button>
+			</div>
+			<div v-if="state=='sign'">	
+				<input v-model="email" type="email" placeholder="pls email">
+				<input v-model="password" type="password" placeholder="enter psw">
+				<button @click="changeState('sign')">Sign In</button>
+			</div>
+			<div v-if="state=='register'">
+				<input v-model="email" type="email" placeholder="pls email">
+				<input v-model="password" type="password" placeholder="enter psw">
+				<button @click="changeState('register')">Register</button>
+			</div>
+		</div>
+	</div>
+	<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBavprEEVKaDe4xNgjqqEIcSb0wn2WH9lY",
+    authDomain: "vueschool-firebase-auth-7534c.firebaseapp.com",
+    databaseURL: "https://vueschool-firebase-auth-7534c.firebaseio.com",
+    projectId: "vueschool-firebase-auth-7534c",
+    storageBucket: "vueschool-firebase-auth-7534c.appspot.com",
+    messagingSenderId: "350073639689"
+  };
+  firebase.initializeApp(config);
+
+  	new Vue({
+		el:'#app',
+
+		 data: {
+		 	email:'',
+		 	password:'',
+		 	state:'default'
+
+		 },
+
+		 methods:{
+		 	register ()  {
+		 		firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+		 	},
+		
+
+		 	created (){
+		 		firebase.auth().onAuthStateChanged(user => {this.authUser = user })
+		 	},
+ 
+		 	signOut () {
+		 		firebase.auth().signOut()
+		 	},
+		 	signIn(){
+		 		firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+		 	},
+		 	changeState: function(state){
+		 		this.state=state
+		 	}
+		 },
+	})
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue School Chat Room</title>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div id="chat" class="container">
+  <h1>Vue School Chat Room</h1>
+  <!-- Messages -->
+  <div v-for="message in messages" class="card">
+    <div class="card-body">
+      <!-- nickname -->
+      <h6 class="card-subtitle mb-2 text-muted">{{ message.nickname }}</h6>
+      <!-- content -->
+      <p class="card-text">{{ message.text }}</p>
+    </div>
+  </div>
+
+  <hr>
+  <!-- New Message -->
+  <form @submit.prevent="storeMessage">
+    <div class="form-group">
+      <label>Message:</label>
+      <textarea v-model="messageText" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Nickname:</label>
+      <input v-model="nickname" class="form-control"/>
+    </div>
+    <button class="btn btn-primary">Send</button>
+  </form>
+</div>
+
+
+<script type="text/javascript">
+  var config = {
+    apiKey: "AIzaSyDLEaH4jtZa7Mgf2FKw4iIA9-n2c7Wjxo4",
+    authDomain: "firbaz.firebaseapp.com",
+    databaseURL: "https://firbaz.firebaseio.com",
+    projectId: "firbaz",
+    storageBucket: "firbaz.appspot.com",
+    messagingSenderId: "1006482142554"
+  };
+  firebase.initializeApp(config);
+
+  const database = firebase.database()
+
+  new Vue({
+    el: "#chat",
+
+    data: {
+      messages: [],
+      messageText: '',
+      nickname: 'hootlex'
+    },
+
+    methods: {
+      storeMessage () {
+        this.messages.push({text: this.messageText, nickname: this.nickname})
+        this.messageText = ''
+      }
+    },
+
+    created () {
+      database.ref('messages').on('child_added', snapshot => this.messages.push(snapshot.val()))
+    }
+  })
+</script>
+</body>
+</html>
